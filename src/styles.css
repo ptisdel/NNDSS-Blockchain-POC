@@ -1,0 +1,32 @@
+* {
+	font-family:"Open Sans", Arial, sans-serif;
+	box-sizing:border-box;
+	margin:0;
+	padding:0;	
+}
+
+body {
+	background:#efefef;
+}
+
+table {
+    border-spacing: 12px;
+    border-collapse: initial;
+}
+
+th, td {
+	background: white;
+    box-shadow: 3px 3px 10px rgba(0,0,0,0.1);
+    padding: 7px 10px;
+	text-align:left;
+} 
+
+.navbar {
+	background: #1fbb91;
+	color:white;
+    border-radius: 0;
+}
+
+.navbar-brand {
+	margin:10px;
+}
