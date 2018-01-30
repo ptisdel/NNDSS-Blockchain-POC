@@ -2,65 +2,148 @@
 
 import React from 'react';
 import ReactDOM from 'react-dom';
+import $ from "jquery";
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
+import '../node_modules/datatables.net';
+
 import './styles.css';
 
-
-var records = 
-[			
-	{
-		id: 1,
-		first_name: "Jared",
-		last_name: "Spier",
-		city: "Atlanta",
-		state: "Georgia",
-		zip: "30341",
-		initial_date: "08/26/2008",
-		disease: "AIDS"
-	},
-	{
-		id: 2,
-		first_name: "Amy",
-		last_name: "Bailey",
-		city: "Brookhaven",
-		state: "Georgia",
-		zip: "30329",
-		initial_date: "02/14/2003",
-		disease: "Lupis"
-	},
-	{
-		id: 3,
-		first_name: "Jordan",
-		last_name: "Davenport",
-		city: "Dalton",
-		state: "Georgia",
-		zip: "30705",
-		initial_date: "08/11/2013",
-		disease: "Lupis"
-	}
+var disease_records = 
+    
+    [
+  {
+    "name": "NNDSS Food Borne",
+    "records": [
+      {
+        "age": 49,
+        "case_outbreak_indicator": "Yes",
+        "death": "Yes",
+        "duration": 4,
+        "hospitalized": "Yes",
+        "id": 1,
+        "immediate_national_notifiable_condition": "No",
+        "pregnancy_status": "No"
+      },
+      {
+        "age": 49,
+        "case_outbreak_indicator": "Yes",
+        "death": "Yes",
+        "duration": 4,
+        "hospitalized": "Yes",
+        "id": 2,
+        "immediate_national_notifiable_condition": "No",
+        "pregnancy_status": "No"
+      }
+    ]
+  },
+  {
+    "name": "NNDSS Airborne",
+    "records": [
+      {
+        "age": 25,
+        "case_outbreak_indicator": "No",
+        "death": "Yes",
+        "duration": 4,
+        "hospitalized": "No",
+        "id": 1,
+        "immediate_national_notifiable_condition": "No",
+        "pregnancy_status": "Yes"
+      },
+      {
+        "age": 16,
+        "case_outbreak_indicator": "Yes",
+        "death": "No",
+        "duration": 4,
+        "hospitalized": "Yes",
+        "id": 2,
+        "immediate_national_notifiable_condition": "No",
+        "pregnancy_status": "No"
+      }
+    ]
+  }
 ];
+
+    
 
 
 class App extends React.Component {
 	
+    constructor() {
+        super();
+        this.state = {
+            diseaseRecords: disease_records[0].records
+        };
+        
+    }
+    
+    DiseaseChanged = (event) => {
+        
+        for (var disease in disease_records) {
+            if (disease_records[disease].name == event.target.value) {
+                this.setState({
+                    diseaseRecords: disease_records[disease].records
+                });
+            };
+        }
+        
+    }   
+    
+    RefreshClicked = (event) => {
+        this.setState({
+            diseaseRecords: disease_records[0].records
+        })
+    }
+    
 	 render() {
 		return (
 			<div>
-				<Menu/>    
-				<Records/>
+				<Menu diseaseChanged={this.DiseaseChanged} refreshClicked={this.RefreshClicked}/>    
+				<Records diseaseRecords={this.state.diseaseRecords}/>
 			</div>
 		)
 	 };
+    
+    
+    
 }
 
 
 
 class Menu extends React.Component {
+    
+    constructor(props) {
+		super(props);
+        
+        
+        this.diseaseNames=[];
+        for (var disease in disease_records) {
+            this.diseaseNames.push(disease_records[disease].name);
+        }
+        
+	};
+    
+    
+    renderOptions() {  
+        var diseaseOptions=[];
+		this.diseaseNames.forEach(function(diseaseName) {		
+			diseaseOptions.push(
+				<option key={diseaseName} value={diseaseName}>{diseaseName}</option>
+			);								   
+	   	});
+		return diseaseOptions;
+    }
 	
 	 render() {
 		return (
-			<nav className="navbar">
-			  	<span className="navbar-brand mb-0 h1">Navbar</span>
+			<nav>
+			  	<h1>NNDSS Disease Tracker</h1>
+                <span>
+                    <button id="refresh-button" onClick={this.props.refreshClicked}>Refresh</button>
+                    <select onChange={this.props.diseaseChanged}>                            
+                        {this.renderOptions()}    
+                    </select>
+                </span>
+          
 			</nav>
 		)
 	 };
@@ -69,19 +152,34 @@ class Menu extends React.Component {
 class Records extends React.Component {
 	
 	constructor(props) {
-		super(props);
-		this.state = { records };
-	};
+    super(props);
+    
+  }
+    
+    componentDidMount() {
+        $('#reporting-table').DataTable( {
+            "paging":           true,
+            "searching":        false,
+            "lengthChange":     false,
+            "info":             false,
+            "pagingType":       "numbers"
+        } );
+    }
 	
 	renderRecords() {		
-		var records=[];		  
-		this.state.records.forEach(function(record) {		
+        var records=[];
+        console.log(this.props.diseaseRecords);
+		this.props.diseaseRecords.forEach(function(record) {		
 			records.push(
 				<tr key={record.id}>
-					<td>{record.first_name}</td>	
-					<td>{record.last_name}</td>	
-					<td>{record.disease}</td>	
-					<td>{record.initial_date}</td>				   
+					<td>{record.id}</td>	
+					<td>{record.age}</td>	
+					<td>{record.case_outbreak_indicator}</td>	
+					<td>{record.death}</td>				   
+					<td>{record.duration}</td>			   
+					<td>{record.hospitalized}</td>					   
+					<td>{record.immediate_national_notifiable_condition}</td>				   
+					<td>{record.pregnancy_status}</td>				   
 				</tr>					  
 			);								   
 	   	});
@@ -92,17 +190,18 @@ class Records extends React.Component {
 
 	render() {
 		
-		
-		  
-		  
 		return (
-			<table>
+			<table id="reporting-table">
 				<thead>
 					<tr>
-						<th>First Name</th>
-						<th>Last Name</th>
-						<th>Disease</th>
-						<th>Initial Reporting Date</th>
+                        <th>ID</th>
+						<th>Age</th>
+						<th>Case Outbreak Indicator</th>
+						<th>Death</th>
+						<th>Duration</th>
+						<th>Hospitalized</th>
+						<th>Immediate National Notifiable Condition</th>
+						<th>Pregnancy Status</th>
 					</tr>
 				</thead>
 				<tbody>	
