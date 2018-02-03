@@ -1,0 +1,34 @@
+[{
+	"name": "NNDSS Food borne",
+	"records": [{
+		"age": 49,
+		"case_outbreak_indicator": "Yes",
+		"death": "Yes",
+		"duration": 4,
+		"hospitalized": "Yes",
+		"id": 1,
+		"immediate_national_notifiable_condition": "No",
+		"pregnancy_status": "Yes"
+	}]
+}, {
+	"name": "NNDSS Airborne",
+	"records": [{
+		"age": 30,
+		"case_outbreak_indicator": "No",
+		"death": "Yes",
+		"duration": 1,
+		"hospitalized": "Yes",
+		"id": 1,
+		"immediate_national_notifiable_condition": "Yes",
+		"pregnancy_status": "No"
+	}, {
+		"age": 68,
+		"case_outbreak_indicator": "No",
+		"death": "Yes",
+		"duration": 4,
+		"hospitalized": "Yes",
+		"id": 1,
+		"immediate_national_notifiable_condition": "Yes",
+		"pregnancy_status": "No"
+	}]
+}]

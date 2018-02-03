@@ -57,58 +57,28 @@ option {
     border:0;
 }
 
-table {
+.ReactTable {
     box-shadow: 3px 3px 10px rgba(0,0,0,0.1);
     margin: auto;
     width: 100%;
     max-width: 100%;
     box-sizing: content-box;
+    background:white;
+    border:0;
 }
 
-th, td {
-	background: white;
-    padding: 12px 25px;
-	text-align:left;
-} 
-
-th {
-    background: rgba(31, 187, 145, 0.2);
-    color: #2f4c2f;
-    cursor:pointer;
-}
-
-th:hover {
-    background: rgba(31, 187, 145, 0.4);
-}
-
-td {    
-}
-
-tr:hover td{
+.rt-tr-group:hover{
 	background: #f1f1f1;
     
 }
 
-.paging_numbers {
+.rt-th {
+    padding: 10px !important;
+}
+
+
+.rt-td {
     text-align:center;
-    margin-top:20px;
-}
-
-.paginate_button {
-    color: white;
-    padding: 5px 10px;
-    background: #1fbb91;
-    border-radius: 10px;
-    cursor:pointer;
-}
-
-.paginate_button:hover {
-    text-decoration:none;
-    color:white;
-}
-
-.paginate_button.current {
-    background:#15654f;
 }
 
 .navbar {
