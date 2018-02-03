@@ -7,7 +7,7 @@ import ReactTable from 'react-table';
 import 'react-table/react-table.css';
 import './styles.css';
 
-//TO DO: currently loads local json file; remove when pinging API for JSON
+//TODO: currently loads local json file; remove this line after setting up API JSON
 import disease_records from './getRecords.json';
 
 
@@ -27,7 +27,18 @@ class App extends React.Component {
 
     }
 
-   
+   componentDidMount() {       
+       this.FetchDiseaseData();       
+   }
+    
+    
+    FetchDiseaseData() {
+        
+        //TODO: add fetch function to grab JSON from API
+        
+    }
+    
+    
 
     ChangeDisease = (event) => {
         for (var disease in disease_records) {
@@ -42,7 +53,9 @@ class App extends React.Component {
     }   
 
     RefreshDiseaseData = (event) => {        
-        //TO DO: re-load JSON from API (when that is set up)        
+        
+        this.FetchDiseaseData();        
+        
         this.setState({
             diseaseRecords: disease_records[0].records,
             selectedDisease: disease_records[0].name
