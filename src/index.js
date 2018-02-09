@@ -7,12 +7,7 @@ import ReactTable from 'react-table';
 import 'react-table/react-table.css';
 import './styles.css';
 
-//TODO: currently loads local json file; remove this line after setting up API JSON
-import disease_records from './getRecords.json';
-
-
-
-
+let srcURL = "https://dum0f49x02.execute-api.us-east-1.amazonaws.com/prod/NNDSSgetRecordsFunction";
 
 
 class App extends React.Component {
@@ -20,53 +15,62 @@ class App extends React.Component {
     constructor() {
         super();
 
+        
         this.state = {
-            diseaseRecords: disease_records[0].records,
-            selectedDisease: disease_records[0].name
+            all_records: [],
+            selected_records: [],
+            selected_disease: ""
         };
 
     }
 
    componentDidMount() {       
-       this.FetchDiseaseData();       
+    
+         
+       this.FetchDiseaseData();      
    }
     
     
-    FetchDiseaseData() {
+    FetchDiseaseData = () => {
         
-        //TODO: add fetch function to grab JSON from API
+        
+        fetch(srcURL)
+            .then((resp) => resp.json())
+            .then((data) => {
+            
+            var d = JSON.parse(data.body);
+            
+            this.setState({
+                all_records: d,
+                selected_records: d[0].records,
+                selected_disease: d[0].name
+            });
+            
+          });
         
     }
     
     
 
     ChangeDisease = (event) => {
-        for (var disease in disease_records) {
-            if (disease_records[disease].name === event.target.value) {
+        for (var disease in this.state.all_records) {
+            if (this.state.all_records[disease].name === event.target.value) {
                 
                 this.setState({
-                    diseaseRecords: disease_records[disease].records,
-                    selectedDisease: disease_records[disease].name
+                    selected_records: this.state.all_records[disease].records,
+                    selected_disease: this.state.all_records[disease].name
                 });
             };
         }
     }   
 
-    RefreshDiseaseData = (event) => {        
-        
-        this.FetchDiseaseData();        
-        
-        this.setState({
-            diseaseRecords: disease_records[0].records,
-            selectedDisease: disease_records[0].name
-        })
-    }
+   
 
     render() {
         return (
             <div>
-                <Menu selectedDisease={this.state.selectedDisease} diseaseChanged={this.ChangeDisease} refreshClicked={this.RefreshDiseaseData}/>    
-                <Records diseaseRecords={this.state.diseaseRecords}/>
+                <Menu all_records={this.state.all_records} selected_disease={this.state.selected_disease} diseaseChanged={this.ChangeDisease} refreshClicked={this.FetchDiseaseData}/>    
+                <Records selected_records={this.state.selected_records}/>
             </div>
         )
     };
@@ -79,27 +83,26 @@ class App extends React.Component {
 
 class Menu extends React.Component {
 
-    constructor(props) {
-        
-        super(props);
-
-
-        this.diseaseNames=[];
-        for (var disease in disease_records) {
-            this.diseaseNames.push(disease_records[disease].name);
-        }
-
-    };
-
 
     renderOptions() {  
+        
+        this.diseaseNames=[];
+        for (var disease in this.props.all_records) { 
+            this.diseaseNames.push(this.props.all_records[disease].name);
+        }
+        
+        
         var diseaseOptions=[];
         this.diseaseNames.forEach(function(diseaseName) {		
             diseaseOptions.push(
                 <option key={diseaseName} value={diseaseName}>{diseaseName}</option>
             );								   
-        });
+        });        
+        
+        if (diseaseOptions.length<1) { diseaseOptions.push(<option key="Loading..." value="Loading...">Loading...</option>);}
+        
         return diseaseOptions;
+        
     }
 
     render() {
@@ -108,7 +111,7 @@ class Menu extends React.Component {
                 <h1>NNDSS Disease Tracker</h1>
                 <span>
                     <button id="refresh-button" onClick={this.props.refreshClicked}>Refresh</button>
-                    <select onChange={this.props.diseaseChanged} value={this.props.selectedDisease} >                            
+                    <select onChange={this.props.diseaseChanged} value={this.props.selected_disease} >                            
                         {this.renderOptions()}    
                     </select>
                 </span>
@@ -153,7 +156,7 @@ class Records extends React.Component {
 
         return (
             <ReactTable 
-                data={this.props.diseaseRecords}
+                data={this.props.selected_records}
                 columns={columns}>
             </ReactTable>
         );

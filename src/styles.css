@@ -45,6 +45,7 @@ select {
     padding: 5px 10px;
     cursor:pointer;
     outline:none;
+    height: 39px;
 }
 
 select:hover {
