@@ -77,6 +77,11 @@ option {
     padding: 10px !important;
 }
 
+.rt-resizable-header-content {
+    white-space:initial;
+    display: flex;
+    justify-content: center;
+}
 
 .rt-td {
     text-align:center;

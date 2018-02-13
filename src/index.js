@@ -38,13 +38,26 @@ class App extends React.Component {
             .then((resp) => resp.json())
             .then((data) => {
             
-            var d = JSON.parse(data.body);
+            try {
+                
+                
+                console.log(d);
+                
+                var d = JSON.parse(data.body);
+                
             
-            this.setState({
-                all_records: d,
-                selected_records: d[0].records,
-                selected_disease: d[0].name
-            });
+                this.setState({
+                    all_records: d,
+                    selected_records: d[0].records,
+                    selected_disease: d[0].name
+                });
+                
+            }
+            catch(error) {
+                console.log(error);
+            }
+            
+            
             
           });
         
@@ -52,16 +65,33 @@ class App extends React.Component {
     
     
 
-    ChangeDisease = (event) => {
+    ChangeDisease = (e) => {
+        
+        var new_selected_disease = e.target.value;
+        var new_selected_records = [];
+        
+       
+        
+        
         for (var disease in this.state.all_records) {
-            if (this.state.all_records[disease].name === event.target.value) {
+            
+            if (new_selected_disease === "" || this.state.all_records[disease].name === new_selected_disease ) {
                 
-                this.setState({
-                    selected_records: this.state.all_records[disease].records,
-                    selected_disease: this.state.all_records[disease].name
-                });
+                
+                for (var record in this.state.all_records[disease].records) {
+                    new_selected_records.push(this.state.all_records[disease].records[record]);           
+                }
+                
             };
         }
+        
+        console.log(new_selected_records);
+        
+        this.setState({
+            selected_disease: new_selected_disease,
+            selected_records: new_selected_records
+        });
+        
     }   
 
    
@@ -93,13 +123,15 @@ class Menu extends React.Component {
         
         
         var diseaseOptions=[];
+        
+        diseaseOptions.push(<option key="All Diseases" value="">All Diseases</option>);
+    
         this.diseaseNames.forEach(function(diseaseName) {		
             diseaseOptions.push(
                 <option key={diseaseName} value={diseaseName}>{diseaseName}</option>
             );								   
         });        
         
-        if (diseaseOptions.length<1) { diseaseOptions.push(<option key="Loading..." value="Loading...">Loading...</option>);}
         
         return diseaseOptions;
         
